@@ -11,16 +11,22 @@ import java.rmi.registry.LocateRegistry;
 public class Servidor {
 
 	public static void main(String[] args) throws RemoteException, MalformedURLException {
-		// Execução do modulo de referencia remota (RMI Registry)
-		LocateRegistry.createRegistry(1099);
-		
-		// Instanciacao do servente
-		Tempo tempo = new Tempo();
-		
-		// Registro do servente no modulo de referencia remota (RMI Registry)
-		Naming.rebind("rmi://localhost/Tempo", tempo);
-		System.out.println("Servidor pronto e registrado no RMI Registry.");
-
+		try {
+			// Execução do modulo de referencia remota (RMI Registry)
+			LocateRegistry.createRegistry(1099);
+			
+			// Instanciacao do servente
+			Tempo tempo = new Tempo();
+			
+			// Registro do servente no modulo de referencia remota (RMI Registry)
+			Naming.rebind("rmi://localhost/Tempo", tempo);
+			System.out.println("Servidor pronto e registrado no RMI Registry.");
+			
+		}catch(Exception ex) {
+			System.out.println("Uma falha grave ocorreu no servidor!");
+			System.out.println("Para fins de desenvolvimento, log do erro a seguir: ");
+			ex.printStackTrace();
+		}
 	}
 
 }

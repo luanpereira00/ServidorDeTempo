@@ -3,8 +3,11 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import com.sun.javafx.collections.MappingChange.Map;
 	
 /**
  * @author Joaliton Luan Pereira Ferreira
@@ -12,7 +15,6 @@ import java.util.Scanner;
  * @brief Implementa o cliente na relacao RMI
  */
 public class Cliente {
-
 	/**
 	 * @brief Contem os formatos de datas/horas validas para esta aplicacao
 	 */
@@ -33,29 +35,46 @@ public class Cliente {
 	};
 
 	public static void main(String[] args) throws RemoteException, NotBoundException, MalformedURLException {
-		ITempo stub = (ITempo) Naming.lookup("rmi://localhost/Tempo");
-		Scanner input = new Scanner(System.in);
-		int escolha = 0;
-		
-		boolean condicao = true;
-		while(condicao) {
-			printMenu();	
-			try { 
-				escolha = input.nextInt();
-				if(escolha==0) {
-					condicao=false;
-				} else if(escolha>0 && escolha<=formatosValidos.length) {
-					System.out.println("Formato escolhido     -> "+formatosValidosHumanReadable[escolha-1]);
-					System.out.println("Resultado do servidor -> "+stub.tempo(new SimpleDateFormat(formatosValidos[escolha-1]))+"\n\n\n");
-				} else {
-					System.out.println("Opcao invalida! Tente novamente...\n\n\n\n");
-				}
-			} catch (InputMismatchException ex) {
+		try {	
+			int escolha = 0;
+			Scanner input = null;
+			ITempo stub = null;
+			try {
+				stub = (ITempo) Naming.lookup("rmi://localhost/Tempo");
 				input = new Scanner(System.in);
-				System.out.println("Opcao invalida! Tente novamente...\n\n\n\n");
-			} 			
-		}	
-		System.out.println("Encerrando a aplicacao no cliente...");
+				//TODO ALTERAR A DESGRAÇA DA EXCEÇÃO QUE VAI SER LEVANTADA NO WEB SERVICE
+			}catch(RemoteException ex) {
+				System.out.println("Uma falha ocorreu ao vincular o endereço do servidor e isso irá impedir a execução do programa :(");
+				System.out.println("Por favor, tente novamente mais tarde.");
+				return;
+			}
+			
+			boolean condicao = true;
+			while(condicao) {
+				printMenu();	
+				try { 
+					escolha = input.nextInt();
+					if(escolha==0) {
+						condicao=false;
+					} else if(escolha>0 && escolha<=formatosValidos.length) {
+						System.out.println("Formato escolhido     -> "+formatosValidosHumanReadable[escolha-1]);
+						System.out.println("Resultado do servidor -> "+stub.tempo(new SimpleDateFormat(formatosValidos[escolha-1]))+"\n\n\n");
+					} else {
+						System.out.println("Opcao invalida! Tente novamente...\n\n\n\n");
+					}
+				} catch (InputMismatchException ex) {
+					input = new Scanner(System.in);
+					System.out.println("Opcao invalida! Tente novamente...\n\n\n\n");
+				} 			
+			}	
+		}catch(Exception ex) {
+			System.out.println("Uma falha não esperada ocorreu, encerraremos a aplicação por segurança.");
+			System.out.println("Por fins de desenvolvimento, mostraremos o log do erro:");
+			ex.printStackTrace();
+		}finally {
+			System.out.println("Encerrando a aplicacao no cliente...");
+		}
+			
 	}
 
 	/**
