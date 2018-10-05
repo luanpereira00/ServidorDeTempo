@@ -1,16 +1,22 @@
+package temp;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.text.SimpleDateFormat;
+
+import javax.jws.WebMethod;
+import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
 
 
 /**
  * @author Joaliton Luan Pereira Ferreira
  * @author Shirley Ohara Telemaco de Freitas
- * @brief Interface para definir o servente de Tempo
+ * @brief  Interface para definir o servente de Tempo
  */
-public interface ITempo extends Remote {
-	
+
+@WebService
+@SOAPBinding(style = Style.RPC)
+public interface ITempo {
 	
 	/**
 	 * @brief Um metodo que retorna a data e/ou hora atual seguindo o formato passado por argumento 
@@ -18,5 +24,5 @@ public interface ITempo extends Remote {
 	 * @return A data/hora atual
 	 * @throws RemoteException
 	 */
-	public String tempo(SimpleDateFormat tempo) throws RemoteException;
+	@WebMethod String tempo(String tempoFormato);
 }

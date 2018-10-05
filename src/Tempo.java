@@ -1,7 +1,7 @@
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+package temp;
+
 import java.util.Date;
-import java.text.DateFormat;
+import javax.jws.WebService;
 import java.text.SimpleDateFormat;
 
 /**
@@ -9,22 +9,22 @@ import java.text.SimpleDateFormat;
  * @author Shirley Ohara Telemaco de Freitas
  * @brief Classe para implementar o servente de Tempo
  */
-public class Tempo extends UnicastRemoteObject implements ITempo {
+
+@WebService(endpointInterface = "temp.ITempo")
+public class Tempo implements ITempo {
 	
 	/**
 	 * Construtor padrao
-	 * @throws RemoteException
 	 */
-	protected Tempo() throws RemoteException { 
-		super(); 
-	}
+	protected Tempo () { }
 	
 	
 	/* (non-Javadoc)
 	 * @see ITempo#tempo(java.text.SimpleDateFormat)
 	 */
-	public String tempo(SimpleDateFormat tempo) throws RemoteException{
-		return tempo.format(new Date(System.currentTimeMillis()));
+	public String tempo (String tempoFormato) {
+		SimpleDateFormat sdf = new SimpleDateFormat(tempoFormato);
+		return sdf.format(new Date(System.currentTimeMillis()));
 	}
 
 }
